@@ -30,8 +30,8 @@ class Disk {
 	}
 
 	get index_count() {
-		if(this.rings === 1) return 1;
-		return this.point_count * 6 - 12 * this.rings - 6 * (this.rings - 1);
+		if(this.rings === 0) return 1;
+		return this.point_count * 6 - 18 * this.rings - 6;
 	}
 
 	// Generate / fetch points
@@ -65,38 +65,38 @@ class Disk {
 		if(this.#points === null) this.points; // Generate points first
 		if(this.rings === 0) return new this.#array(0);
 
-		const indices = new Utils.IndexedArray(new this.#array(this.index_count * this.dimensions));
+		const indices = new Utils.IndexedArray(new this.#array(this.index_count));
 
 		// Middle 6 triangles
 		for(let i = 0; i < 6; i++) {
-			indices.push(0, i + 1, i + 2);
+			indices.push(0, i * 2 + 2, i * 2 + 4);
 		}
 
-		indices.set(5 * this.dimensions + 2, 1);
+		indices.set(17, 2);
 
 		// Other triangles
-		let ring_start = 7 * this.dimensions;
+		let ring_start = 7 * 2;
 
-		for(let r = 2; r < this.rings; r++) {
+		for(let r = 2; r <= this.rings; r++) {
 			const point_num = 6 * (r - 1);
 			const sixth = point_num / 6;
 
 			for(let s = 0; s < 6; s++) {
 				for(let p = 0; p <= sixth; p++) {
-					const offset = p + s * sixth + s;
+					const offset = p * 2 + (s * 2) * sixth + s * 2;
 
 					let p1 = ring_start + offset;
-					let p2 = ring_start + offset + 1;
-					let p3 = ring_start + offset - point_num - s;
-					let p4 = p3 + 1;
+					let p2 = ring_start + offset + 2;
+					let p3 = ring_start + offset - point_num * 2 - s * 2;
+					let p4 = p3 + 2;
 
-					if(p1 >= ring_start + 6 * r - 1) {
+					if(p1 >= ring_start + 6 * (r * 2) - 2) {
 						p1 = ring_start;
-						p2 = ring_start + 6 * r - 1;
-						p3 = ring_start - point_num;
+						p2 = ring_start + 6 * (r * 2) - 2;
+						p3 = ring_start - point_num * 2;
 					}
-					else if(p === sixth - 1 && p1 >= ring_start + 6 * r - 2) {
-						p4 -= point_num;
+					else if(p === sixth - 1 && p1 >= ring_start + 6 * r * 2 - 4) {
+						p4 -= point_num * 2;
 					}
 
 					indices.push(p1, p2, p3);
@@ -104,7 +104,7 @@ class Disk {
 				}
 			}
 
-			ring_start += 6 * r * this.dimensions;
+			ring_start += 6 * r * 2;
 		}
 
 		this.#indices = indices.inner;

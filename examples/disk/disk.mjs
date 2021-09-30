@@ -3,17 +3,47 @@ import { Disk } from "../src/include.mjs";
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
-const disk = new Disk(5, 20);
+const disk = new Disk(10, 20);
 const points = disk.points;
 const indices = disk.indices;
-
-console.log(indices);
 
 
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 const stroke_width = 4;
+
+function color(...args) {
+	args = args.filter(arg => arg !== undefined && arg !== null);
+
+	if(args.length === 0)
+		return `#000`;
+	if(args.length === 1)
+		return `rgb(${args[0]}, ${args[0]}, ${args[0]})`;
+	if(args.length === 2)
+		return `rgba(${args[0]}, ${args[0]}, ${args[0]}, ${args[1]})`;
+	if(args.length === 3)
+		return `rgb(${args[0]}, ${args[1]}, ${args[2]})`;
+	if(args.length === 4)
+		return `rgba(${args[0]}, ${args[1]}, ${args[2]}, ${args[3]})`;
+}
+
+function fill(...args) {
+	if(typeof args[0] === 'string')
+		ctx.fillStyle = args[0];
+	else
+		ctx.fillStyle = color(...args);
+}
+
+function random(min=1, max=0) {
+	if(min > max) {
+		let temp = min;
+		min = max;
+		max = temp;
+	}
+
+	return Math.random() * (max - min) + min;
+}
 
 function point(x, y) {
 	ctx.beginPath();
@@ -24,4 +54,21 @@ function point(x, y) {
 
 for(let p = 0; p < points.length; p += 2) {
 	point(points[p] + canvas.width / 2, points[p + 1] + 1 + canvas.height / 2);
+}
+
+for(let i = 0; i < indices.length; i += 3) {
+	const pts = [
+		points[indices[i]], points[indices[i] + 1],
+		points[indices[i + 1]], points[indices[i + 1] + 1],
+		points[indices[i + 2]], points[indices[i + 2] + 1]
+	];
+
+	fill(random(255), random(255), random(255));
+
+	ctx.beginPath();
+	ctx.moveTo(pts[0] + canvas.width / 2, pts[1] + canvas.height / 2);
+	ctx.lineTo(pts[2] + canvas.width / 2, pts[3] + canvas.height / 2);
+	ctx.lineTo(pts[4] + canvas.width / 2, pts[5] + canvas.height / 2);
+	ctx.lineTo(pts[0] + canvas.width / 2, pts[1] + canvas.height / 2);
+	ctx.fill();
 }

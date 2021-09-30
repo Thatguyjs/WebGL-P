@@ -50,7 +50,8 @@ const Utils = {
 			if(ind_end > this.#length) return false;
 
 			while(this.#index < ind_end) {
-				this.#array[this.#index++] = values[this.#index - ind_start];
+				this.#array[this.#index] = values[this.#index - ind_start];
+				this.#index++;
 			}
 
 			return true;
