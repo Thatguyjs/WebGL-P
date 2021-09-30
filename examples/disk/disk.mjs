@@ -5,6 +5,9 @@ const ctx = canvas.getContext('2d');
 
 const disk = new Disk(5, 20);
 const points = disk.points;
+const indices = disk.indices;
+
+console.log(indices);
 
 
 canvas.width = window.innerWidth;
