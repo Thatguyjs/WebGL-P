@@ -4,7 +4,7 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
 const disk = new Disk(10, 20);
-const points = disk.points;
+const vertices = disk.vertices;
 const indices = disk.indices;
 
 
@@ -52,23 +52,23 @@ function point(x, y) {
 }
 
 
-for(let p = 0; p < points.length; p += 2) {
-	point(points[p] + canvas.width / 2, points[p + 1] + 1 + canvas.height / 2);
+for(let p = 0; p < vertices.length; p += 2) {
+	point(vertices[p] + canvas.width / 2, vertices[p + 1] + 1 + canvas.height / 2);
 }
 
 for(let i = 0; i < indices.length; i += 3) {
-	const pts = [
-		points[indices[i]], points[indices[i] + 1],
-		points[indices[i + 1]], points[indices[i + 1] + 1],
-		points[indices[i + 2]], points[indices[i + 2] + 1]
+	const verts = [
+		vertices[indices[i]], vertices[indices[i] + 1],
+		vertices[indices[i + 1]], vertices[indices[i + 1] + 1],
+		vertices[indices[i + 2]], vertices[indices[i + 2] + 1]
 	];
 
 	fill(random(255), random(255), random(255));
 
 	ctx.beginPath();
-	ctx.moveTo(pts[0] + canvas.width / 2, pts[1] + canvas.height / 2);
-	ctx.lineTo(pts[2] + canvas.width / 2, pts[3] + canvas.height / 2);
-	ctx.lineTo(pts[4] + canvas.width / 2, pts[5] + canvas.height / 2);
-	ctx.lineTo(pts[0] + canvas.width / 2, pts[1] + canvas.height / 2);
+	ctx.moveTo(verts[0] + canvas.width / 2, verts[1] + canvas.height / 2);
+	ctx.lineTo(verts[2] + canvas.width / 2, verts[3] + canvas.height / 2);
+	ctx.lineTo(verts[4] + canvas.width / 2, verts[5] + canvas.height / 2);
+	ctx.lineTo(verts[0] + canvas.width / 2, verts[1] + canvas.height / 2);
 	ctx.fill();
 }
